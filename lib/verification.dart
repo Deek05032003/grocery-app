@@ -86,7 +86,7 @@ class veri extends StatelessWidget {
                     ),
                          IconButton(
                       onPressed: () {
-                        Navigator.pushNamed(context, 'select_location');
+                        Navigator.pushReplacementNamed(context, 'select_location');
                       },
                       icon: Image.asset('assets/ic.png'),
                     ),

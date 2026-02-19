@@ -224,7 +224,7 @@ class _locatState extends State<locat> {
                           );
                           return;
                         }
-                        Navigator.pushNamed(context, 'log in');
+                        Navigator.pushReplacementNamed(context, 'log in');
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Color(0xff53b175),

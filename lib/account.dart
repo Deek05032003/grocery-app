@@ -2,9 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:project/common_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'profile_screen.dart';
-class my_account extends StatelessWidget {
+import 'package:shared_preferences/shared_preferences.dart';
+class my_account extends StatefulWidget {
   my_account();
 
+  @override
+  State<my_account> createState() => _my_accountState();
+}
+
+class _my_accountState extends State<my_account> {
   List<Map<String, dynamic>> dtl_data = [
     {
       'icon': Icon(Icons.shopping_bag_outlined, size: 30),
@@ -47,6 +53,13 @@ class my_account extends StatelessWidget {
       'route':'about_screen'
     },
   ];
+
+ void logout()async{
+   SharedPreferences prefs=await SharedPreferences.getInstance();
+   prefs.remove('token');
+   if (!mounted) return;
+   Navigator.pushReplacementNamed(context, 'log in');
+ }
 
   @override
   Widget build(BuildContext context) {
@@ -131,7 +144,7 @@ class my_account extends StatelessWidget {
                     ),
                   ),
                   onPressed: () {
-                    Navigator.pushNamed(context, 'log in');
+                   logout();
                   },
                   child: Row(
                     children: [
@@ -162,6 +175,7 @@ class my_account extends StatelessWidget {
       ),
     );
   }
+
   Widget commonlist(context, index) {
     return InkWell(onTap: (){
       Navigator.pushNamed(context, dtl_data[index]['route']);

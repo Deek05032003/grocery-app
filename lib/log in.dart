@@ -4,6 +4,7 @@ import 'package:project/home_screen.dart';
 import 'bottum_Nevi.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:project/api/log_api.dart';
+
 class log extends StatefulWidget {
   log();
 
@@ -13,11 +14,13 @@ class log extends StatefulWidget {
 
 class _logState extends State<log> {
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
-  bool passwordvisible=false;
-  bool isEmpty=true;
+  bool passwordvisible = false;
+  bool isEmpty = true;
+  bool isLoading = false;
 
-  TextEditingController emailcontroller=TextEditingController();
-  TextEditingController passwordcontroller=TextEditingController();
+  TextEditingController emailcontroller = TextEditingController();
+  TextEditingController passwordcontroller = TextEditingController();
+
   // void login() async {
   //   if (!_formkey.currentState!.validate()) return;
   //
@@ -41,36 +44,50 @@ class _logState extends State<log> {
   //     );
   //   }
   // }
+
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+    login();
+    });
+  }
+
   void login() async {
     if (!_formkey.currentState!.validate()) return;
-
+    setState(() {
+      isLoading = true;
+    });
     String? token = await ApiService.loginUser(
       email: emailcontroller.text,
       password: passwordcontroller.text,
     );
-
-    if (token != null) {
-
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setString("token", token);
-
-      ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                backgroundColor: Colors.green,
-                content: Text("Log in successfull"),
-              ),
-            );
-      Navigator.pushNamed(context, 'bottum_Nevi');
-
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("Invalid Email or Password"),
-          backgroundColor: Colors.red,
-        ),
-      );
+    setState(() {
+      isLoading = false;
+    });
+    if (token != null && token.isNotEmpty) {
+      await TokenManager.saveToken(token);
+      await TokenManager.getToken();
+        Navigator.pushReplacementNamed(context, 'bottum_Nevi');
     }
+    else
+    {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("invalid email or password"),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
   }
+
+  // void checkLoginStatus() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   String? token = prefs.getString("token");
+  //   // if (!mounted) return;
+  //   if (token != null) {
+  //     Navigator.pushReplacementNamed(context, 'bottum_Nevi');
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -89,17 +106,17 @@ class _logState extends State<log> {
                   children: [
                     con(
                       wd: double.infinity,
-                      ht: MediaQuery.of(context).size.height * 0.3,
-                      widget: Image.asset('assets/back.png', fit: BoxFit.cover),
+                      ht: MediaQuery
+                          .of(context)
+                          .size
+                          .height * 0.3,
+                      widget: Image.asset('assets/back.png', fit: BoxFit.fill),
                     ),
-                    Positioned(
-                      left: 183,
-                      top: 77,
-                      child: Image.asset('assets/logcar.png'),
-                    ),
-                    Positioned(
-                      left: 20,
-                      top: 200,
+                    commonpaddingall(top: 0.08,
+                        child: Center(child: Image.asset('assets/logcar.png'))),
+                    commonpaddingall(
+                      left: 0.05,
+                      top: 0.23,
                       child: Text(
                         'Login',
                         style: TextStyle(
@@ -128,8 +145,14 @@ class _logState extends State<log> {
                   r: 0,
                   t: 50,
                   child: SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.9,
-                    height: MediaQuery.of(context).size.width * 0.2,
+                    width: MediaQuery
+                        .of(context)
+                        .size
+                        .width * 0.9,
+                    height: MediaQuery
+                        .of(context)
+                        .size
+                        .width * 0.2,
                     child: TextFormField(
                       controller: emailcontroller,
                       keyboardType: TextInputType.emailAddress,
@@ -143,19 +166,21 @@ class _logState extends State<log> {
                           ),
                         ),
                         focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.black26, width: 1),
+                          borderSide: BorderSide(
+                              color: Colors.black26, width: 1),
                         ),
                         enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.black26, width: 1),
+                          borderSide: BorderSide(
+                              color: Colors.black26, width: 1),
                         ),
                       ),
-                      validator: (value){
-                        if(value!.isEmpty){
+                      validator: (value) {
+                        if (value!.isEmpty) {
                           return 'Please enter your email';
                         }
-                        if(!RegExp(r"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$")
-                            .hasMatch(value)){
-                          return'Please enter valid email';
+                        if (!RegExp(r"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$")
+                            .hasMatch(value)) {
+                          return 'Please enter valid email';
                         }
                         return null;
                       },
@@ -168,8 +193,14 @@ class _logState extends State<log> {
                   r: 0,
                   t: 50,
                   child: SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.9,
-                    height: MediaQuery.of(context).size.width * 0.2,
+                    width: MediaQuery
+                        .of(context)
+                        .size
+                        .width * 0.9,
+                    height: MediaQuery
+                        .of(context)
+                        .size
+                        .width * 0.2,
                     child: TextFormField(
                       controller: passwordcontroller,
                       obscureText: !passwordvisible,
@@ -183,22 +214,26 @@ class _logState extends State<log> {
                           ),
                         ),
                         focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.black26, width: 1),
+                          borderSide: BorderSide(
+                              color: Colors.black26, width: 1),
                         ),
                         enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.black26, width: 1),
+                          borderSide: BorderSide(
+                              color: Colors.black26, width: 1),
                         ),
-                        suffixIcon: IconButton(onPressed:(){
+                        suffixIcon: IconButton(onPressed: () {
                           setState(() {
-                            passwordvisible=!passwordvisible;
+                            passwordvisible = !passwordvisible;
                           });
-                        }, icon: passwordvisible?Icon(Icons.visibility):Icon(Icons.visibility_off)),
+                        }, icon: passwordvisible
+                            ? Icon(Icons.visibility)
+                            : Icon(Icons.visibility_off)),
                       ),
-                      validator: (value){
-                        if(value!.isEmpty){
-                          return'Please enter your Password';
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Please enter your Password';
                         }
-                       return null;
+                        return null;
                       },
                     ),
                   ),
@@ -214,7 +249,7 @@ class _logState extends State<log> {
                     },
                     child: Text(
                       'Forget Password ?',
-                      style: TextStyle(color: Colors.black54),
+                      style: TextStyle(color: Color(0xff53b175)),
                     ),
                   ),
                 ),
@@ -224,8 +259,14 @@ class _logState extends State<log> {
                   r: 0,
                   t: 20,
                   child: SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.8,
-                    height: MediaQuery.of(context).size.height * 0.07,
+                    width: MediaQuery
+                        .of(context)
+                        .size
+                        .width * 0.8,
+                    height: MediaQuery
+                        .of(context)
+                        .size
+                        .height * 0.07,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Color(0xff53b175),
@@ -234,9 +275,16 @@ class _logState extends State<log> {
                         ),
                       ),
                       onPressed: () {
-                       login();
+                        login();
                       },
-                      child: Text(
+                      child: isLoading ? commonsizebox(
+                        height: 0.03,
+                        width: 0.07,
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 3,
+                        ),
+                      ) : Text(
                         'Log In',
                         style: TextStyle(fontSize: 20, color: Colors.white),
                       ),

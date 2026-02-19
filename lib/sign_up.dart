@@ -15,17 +15,22 @@ class _signupState extends State<signup> {
   final TextEditingController emailcontroller=TextEditingController();
   final TextEditingController passwordcontroller=TextEditingController();
   bool passwordvisible = false;
+  bool isLoader=false;
   final GlobalKey<FormState> formkey = GlobalKey<FormState>();
 
   void stat() async {
     if (!formkey.currentState!.validate()) {return;}
-
+    setState(() {
+      isLoader=true;
+    });
     bool success = await ApiService.registerUser(
       name: usernamecontroller.text,
       email: emailcontroller.text,
       password: passwordcontroller.text,
     );
-
+   setState(() {
+     isLoader=false;
+   });
     if (success) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -33,7 +38,7 @@ class _signupState extends State<signup> {
           backgroundColor: Colors.green,
         ),
       );
-      Navigator.pushNamed(context, 'log in');
+      Navigator.pushReplacementNamed(context, 'log in');
       print("Username: ${usernamecontroller.text}");
       print("Email: ${emailcontroller.text}");
       print("Password: ${passwordcontroller.text}");
@@ -323,7 +328,15 @@ class _signupState extends State<signup> {
                           borderRadius: BorderRadius.circular(21),
                         ),
                       ),
-                      child: Text(
+                      child: isLoader
+                          ? SizedBox(
+                        height:20,
+                        width:20,
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 3,
+                        ),
+                      ) : Text(
                         'Sign Up',
                         style: TextStyle(fontSize: 20, color: Colors.white),
                       ),

@@ -15,7 +15,7 @@ class _signState extends State<sign> {
    }
 void getnaviget(){
   if (isValid){
-    Navigator.pushNamed(context, 'number');
+    Navigator.pushReplacementNamed(context, 'number');
   }
   else{
     ScaffoldMessenger.of(context).showSnackBar(

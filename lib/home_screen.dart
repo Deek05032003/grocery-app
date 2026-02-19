@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:project/common_widget.dart';
 import 'package:project/my_cart.dart';
 import 'Product_detail.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:project/api/log_api.dart';
 
 List<Map<String, dynamic>> fruits = [
   {
@@ -175,6 +177,25 @@ class homes extends StatefulWidget {
 
 class _homesState extends State<homes> {
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      authenticateLogin();
+    });
+  }
+  void authenticateLogin() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+   String? token = prefs.getString("token");
+
+    // if (!mounted) return;
+
+   // if (token != null) {
+      //print("Saved Token:${data["access_token"]}");
+    //   Navigator.pushReplacementNamed(context, 'log in');
+    // }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
@@ -210,8 +231,9 @@ class _homesState extends State<homes> {
                 child: commonsizebox(
                   width: 0.85,
                   height: 0.06,
-                  child: SearchBar(autoFocus: false,
-                    onTap: (){
+                  child: SearchBar(
+                    autoFocus: false,
+                    onTap: () {
                       Navigator.pushNamed(context, 'search_barPage');
                     },
                     leading: Icon(Icons.search),

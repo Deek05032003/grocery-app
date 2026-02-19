@@ -110,7 +110,7 @@ class num extends StatelessWidget {
                 t: 150,
                 child: IconButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, 'verification');
+                    Navigator.pushReplacementNamed(context, 'verification');
                   },
                   icon: Image.asset('assets/ic.png'),
                 ),

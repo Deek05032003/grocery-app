@@ -45,7 +45,7 @@ class welcome extends StatelessWidget {
                       height: 0.07,
                       child: ElevatedButton(
                         onPressed: () {
-                          Navigator.pushNamed(
+                          Navigator.pushReplacementNamed(
                               context,'sign_in');
                         },
                         style: ElevatedButton.styleFrom(

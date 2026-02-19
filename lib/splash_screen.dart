@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'onboarding.dart';
+import 'package:project/api/log_api.dart';
 class splash extends StatefulWidget{
   const splash();
 
@@ -14,6 +15,7 @@ class _splashState extends State<splash> {
   @override
   void initState() {
     super.initState();
+    reloadPage();
     Timer(Duration(seconds: 4), (){
       setState(() {
         op=1;
@@ -25,7 +27,14 @@ class _splashState extends State<splash> {
       );
     });
   }
-
+void reloadPage()async{
+  String? token = await TokenManager.getToken();
+  if (token != null && token.isNotEmpty) {
+    Navigator.pushReplacementNamed(context, 'bottum_Nevi');
+  } else {
+    Navigator.pushReplacementNamed(context, 'login');
+  }
+}
   @override
   Widget build(BuildContext context) {
    return Scaffold(
