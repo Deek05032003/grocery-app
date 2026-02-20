@@ -94,9 +94,3 @@ class TokenManager {
     await prefs.remove("token");
   }
 }
-// git init
-// git add README.md
-// git commit -m "first commit"
-// git branch -M main
-// git remote add origin https://github.com/Deek05032003/grocery-app.git
-// git push -u origin main
