@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
 class ApiService {
+
   static const String baseUrl = "https://api.escuelajs.co/api/v1";
 
   /// ---------------- SIGN UP ----------------
@@ -23,8 +24,8 @@ class ApiService {
         "avatar": "https://i.pravatar.cc/150?img=3",
       }),
     );
+      if (response.statusCode == 201) {
 
-    if (response.statusCode == 201) {
       return true;
     } else {
       print('Registration error:${response.statusCode}');
@@ -85,6 +86,7 @@ class TokenManager {
   }
 
   static Future<String?> getToken() async {
+    // apiCount++;
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString("token");
   }

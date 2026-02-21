@@ -86,7 +86,7 @@ class _product_detailState extends State<product_detail> {
                             b: 0,
                             child: IconButton(
                               onPressed: () {
-                                Share.share('hello');
+                                Share.share('${widget.product['title']}');
                               },
                               icon: Icon(Icons.ios_share, size: 25),
                             ),
